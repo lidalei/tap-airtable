@@ -95,20 +95,25 @@ class Airtable(object):
         entries = []
 
         for table in response.json()["tables"]:
-            schema_cols = {"id": Schema(inclusion="automatic", type=['null', "string"])}
-
-            meta = {}
-
             table_name = table["name"]
+            meta = {}
             keys = []
+            
             meta = metadata.write(meta, (), "inclusion", "available")
             meta = metadata.write(meta, 'database_name', 'base_id', base_id)
 
+            # id refers to Airtable Record ID
+            schema_cols = {"id": Schema(inclusion="automatic", type=['null', "string"])}
+            keys.append("id")
+            meta = metadata.write(meta, ('properties', 'id'), 'inclusion', 'available')
+            meta = metadata.write(meta, ('properties', 'id'), 'real_name', 'id')
+
+            # id field is not listed in fields
             for field in table["fields"]:
                 # numbers are not allowed at the start of column name in big query
                 # check if the name starts with digit, keep the same naming but add a character before
                 field_name = field["name"]
-                if field["name"][0].isdigit():
+                if field_name[0].isdigit():
                     field_name = "c_" + field_name
 
                 col_schema = cls.column_schema(field)
