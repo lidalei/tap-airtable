@@ -105,7 +105,7 @@ class Airtable(object):
             # id refers to Airtable Record ID
             schema_cols = {"id": Schema(inclusion="automatic", type=['null', "string"])}
             keys.append("id")
-            meta = metadata.write(meta, ('properties', 'id'), 'inclusion', 'available')
+            meta = metadata.write(meta, ('properties', 'id'), 'inclusion', 'automatic')
             meta = metadata.write(meta, ('properties', 'id'), 'real_name', 'id')
 
             # id field is not listed in fields
